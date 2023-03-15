@@ -53,7 +53,7 @@ public class App {
 		groupedStream.print();
 
         CassandraSink.addSink(groupedStream)
-				.setHost("172.23.0.4")
+				.setHost("cassandra")
                 .setQuery("INSERT INTO flink.min_max(location_id, max, min) values (?, ?, ?);")
 				.build();
 
@@ -66,7 +66,7 @@ public class App {
 		meanStream.print();
 
         CassandraSink.addSink(meanStream)
-				.setHost("172.23.0.4")
+				.setHost("cassandra")
                 .setQuery("INSERT INTO flink.mean(location_id, mean) values (?, ?);")
 				.build();
 
@@ -98,7 +98,7 @@ public class App {
         location_user_counts.print();
 
         CassandraSink.addSink(location_user_counts)
-				.setHost("172.23.0.4")
+				.setHost("cassandra")
                 .setQuery("INSERT INTO flink.location_user_counts(user_location, counts) values (?, ?);")
 				.build();
 
@@ -151,7 +151,7 @@ public class App {
         topN.print();
 
         CassandraSink.addSink(topN)
-				.setHost("172.23.0.4")
+				.setHost("cassandra")
                 .setQuery("INSERT INTO flink.top_n_locations(location_id, counts) values (?, ?);")
 				.build();
 
