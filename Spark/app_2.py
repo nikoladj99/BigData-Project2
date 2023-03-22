@@ -93,12 +93,12 @@ def write_to_influxdb_3(df, epoch_id):
     # Kreiranje instance WriteApi klase
     write_api = client.write_api(write_options=SYNCHRONOUS)
 
-    df = df.orderBy(col("num_users").desc()).limit(N)
+    df = df.orderBy(col("num_visits").desc()).limit(N)
 
     for row in df.collect():
-        point = Point("top_n_locations") \
+        point = Point("top_n_locations_v2") \
             .tag("location_id", row.location_id) \
-            .field("num_users", row.num_users)
+            .field("num_visits", row.num_visits)
         write_api.write(bucket=bucket, org=org, record=point)
 
 # Prosecno, maksimalno i minimalno vreme koje je svaki korisnik proveo na odredjenoj lokaciji
@@ -129,7 +129,7 @@ stream_2 = windowed_df_2.writeStream \
 
 # Top N lokacija
 windowed_df_3 = parsed_df.groupBy(window(parsed_df.time_stamp, "10 seconds"), parsed_df.location_id) \
-    .agg(approx_count_distinct(parsed_df.user).alias("num_users"))
+    .agg(count("*").alias("num_visits"))
 
 stream_3 = windowed_df_3.writeStream \
     .outputMode("update") \
